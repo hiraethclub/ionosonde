@@ -131,14 +131,9 @@ fun SunlitMapScreen(viewModel: SunlitMapViewModel = viewModel()) {
                     val sunMarker = Marker(mapView).apply {
                         position = GeoPoint(subsolar.latitude, subsolar.longitude)
                         setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
-                        title = "Subsolar Point"
+                        title = "☀ Subsolar Point"
                         snippet = "Lat: %.1f° Lon: %.1f°".format(subsolar.latitude, subsolar.longitude)
-                        textLabelFontSize = 24
-                        textLabelBackColor = AndroidColor.argb(180, 255, 179, 71)
-                        textLabelForeColor = AndroidColor.BLACK
                     }
-                    // Use text label as a sun icon substitute
-                    sunMarker.title = "☀"
                     mapView.overlays.add(sunMarker)
 
                     // Add MUF station markers
@@ -147,21 +142,8 @@ fun SunlitMapScreen(viewModel: SunlitMapViewModel = viewModel()) {
                         val marker = Marker(mapView).apply {
                             position = GeoPoint(station.lat, station.lon)
                             setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                            title = station.name
+                            title = "${station.name} — MUF: $mufText"
                             snippet = "MUF: $mufText"
-                            textLabelFontSize = 20
-                            // Use contrasting colors for visibility on both day and night regions
-                            val isNight = SolarCalculator.isNightSide(station.lat, station.lon, subsolar)
-                            textLabelBackColor = if (isNight) {
-                                AndroidColor.argb(220, 255, 255, 255)
-                            } else {
-                                AndroidColor.argb(220, 13, 27, 42)
-                            }
-                            textLabelForeColor = if (isNight) {
-                                AndroidColor.BLACK
-                            } else {
-                                AndroidColor.WHITE
-                            }
                         }
                         mapView.overlays.add(marker)
                     }

@@ -40,13 +40,9 @@ class MediumWidget : GlanceAppWidget() {
         val data = WidgetDataProvider.getSolarData(context)
         val settings = WidgetDataProvider.getSettings(context)
 
-        val bgAlpha = (settings.widgetBgAlpha * 255 / 100)
-        val bgColor = Color(
-            red = ((settings.widgetBgColor shr 16) and 0xFF).toInt(),
-            green = ((settings.widgetBgColor shr 8) and 0xFF).toInt(),
-            blue = (settings.widgetBgColor and 0xFF).toInt(),
-            alpha = bgAlpha
-        )
+        val bgAlpha = (settings.widgetBgAlpha * 255 / 100).toLong()
+        val bgRgb = settings.widgetBgColor and 0x00FFFFFF
+        val bgColor = Color((bgAlpha shl 24) or bgRgb)
         val textColor = Color(settings.widgetTextColor)
         val useFixed = settings.useFixedConditionColors
         val accent = Color(settings.widgetAccentColor)
@@ -106,7 +102,7 @@ class MediumWidget : GlanceAppWidget() {
     }
 }
 
-@Composable
+@androidx.compose.runtime.Composable
 private fun WidgetIndexCell(label: String, value: String, valueColor: Color, labelColor: Color) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(label, style = TextStyle(color = ColorProvider(labelColor), fontSize = 9.sp))
@@ -114,7 +110,7 @@ private fun WidgetIndexCell(label: String, value: String, valueColor: Color, lab
     }
 }
 
-@Composable
+@androidx.compose.runtime.Composable
 private fun WidgetBandRow(band: String, day: String, night: String, textColor: Color, useFixed: Boolean, accent: Color) {
     Row(modifier = GlanceModifier.fillMaxWidth()) {
         Text(band, style = TextStyle(color = ColorProvider(textColor), fontSize = 10.sp), modifier = GlanceModifier.defaultWeight())

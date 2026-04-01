@@ -48,13 +48,9 @@ class LargeWidget : GlanceAppWidget() {
         val data = WidgetDataProvider.getSolarData(context)
         val settings = WidgetDataProvider.getSettings(context)
 
-        val bgAlpha = (settings.widgetBgAlpha * 255 / 100)
-        val bgColor = Color(
-            red = ((settings.widgetBgColor shr 16) and 0xFF).toInt(),
-            green = ((settings.widgetBgColor shr 8) and 0xFF).toInt(),
-            blue = (settings.widgetBgColor and 0xFF).toInt(),
-            alpha = bgAlpha
-        )
+        val bgAlpha = (settings.widgetBgAlpha * 255 / 100).toLong()
+        val bgRgb = settings.widgetBgColor and 0x00FFFFFF
+        val bgColor = Color((bgAlpha shl 24) or bgRgb)
         val textColor = Color(settings.widgetTextColor)
         val useFixed = settings.useFixedConditionColors
         val accent = Color(settings.widgetAccentColor)

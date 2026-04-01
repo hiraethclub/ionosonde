@@ -1,8 +1,6 @@
 package club.hiraeth.ionosonde.widget
 
 import android.content.Context
-import android.content.Intent
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,13 +33,9 @@ class SmallWidget : GlanceAppWidget() {
         val kIndex = data?.kIndex ?: 0
         val geoMag = data?.geomagneticField ?: "N/A"
 
-        val bgAlpha = (settings.widgetBgAlpha * 255 / 100)
-        val bgColor = Color(
-            red = ((settings.widgetBgColor shr 16) and 0xFF).toInt(),
-            green = ((settings.widgetBgColor shr 8) and 0xFF).toInt(),
-            blue = (settings.widgetBgColor and 0xFF).toInt(),
-            alpha = bgAlpha
-        )
+        val bgAlpha = (settings.widgetBgAlpha * 255 / 100).toLong()
+        val bgRgb = settings.widgetBgColor and 0x00FFFFFF
+        val bgColor = Color((bgAlpha shl 24) or bgRgb)
 
         val kColor = if (settings.useFixedConditionColors) {
             kIndexColor(kIndex)
