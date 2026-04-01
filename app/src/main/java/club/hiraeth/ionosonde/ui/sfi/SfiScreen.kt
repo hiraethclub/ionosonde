@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
@@ -128,7 +129,7 @@ fun SfiScreen(viewModel: SfiViewModel = viewModel()) {
                                 "SFI $ref",
                                 leftPadding + 4f, y - 4f,
                                 android.graphics.Paint().apply {
-                                    color = textColor.hashCode()
+                                    color = textColor.toArgb()
                                     textSize = 24f
                                 }
                             )
@@ -150,7 +151,7 @@ fun SfiScreen(viewModel: SfiViewModel = viewModel()) {
                             label.toString(),
                             2f, y + 6f,
                             android.graphics.Paint().apply {
-                                color = textColor.hashCode()
+                                color = textColor.toArgb()
                                 textSize = 22f
                             }
                         )
@@ -186,7 +187,7 @@ fun SfiScreen(viewModel: SfiViewModel = viewModel()) {
                                 entry.date.takeLast(6),
                                 x - 10f, size.height - 5f,
                                 android.graphics.Paint().apply {
-                                    color = textColor.hashCode()
+                                    color = textColor.toArgb()
                                     textSize = 20f
                                 }
                             )

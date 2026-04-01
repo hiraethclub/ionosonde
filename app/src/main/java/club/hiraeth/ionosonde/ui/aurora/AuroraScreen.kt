@@ -32,6 +32,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -156,7 +157,7 @@ fun AuroraScreen(viewModel: AuroraViewModel = viewModel()) {
                                 String.format("%.1f", entry.kIndex),
                                 x + barWidthPx * 0.2f, y.toFloat() - 4f,
                                 android.graphics.Paint().apply {
-                                    color = textColor.hashCode()
+                                    color = textColor.toArgb()
                                     textSize = 22f
                                 }
                             )
@@ -168,7 +169,7 @@ fun AuroraScreen(viewModel: AuroraViewModel = viewModel()) {
                                 label,
                                 x + barWidthPx * 0.1f, size.height - 5f,
                                 android.graphics.Paint().apply {
-                                    color = textColor.hashCode()
+                                    color = textColor.toArgb()
                                     textSize = 18f
                                 }
                             )

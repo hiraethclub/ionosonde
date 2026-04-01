@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -115,7 +116,7 @@ fun KIndexScreen(viewModel: KIndexViewModel = viewModel()) {
                             k.toString(),
                             2f, y - 4f,
                             android.graphics.Paint().apply {
-                                color = textColor.hashCode()
+                                color = textColor.toArgb()
                                 textSize = 28f
                             }
                         )
@@ -144,7 +145,7 @@ fun KIndexScreen(viewModel: KIndexViewModel = viewModel()) {
                             String.format("%.0f", entry.kIndex),
                             x + barWidthPx * 0.35f, y.toFloat() - 4f,
                             android.graphics.Paint().apply {
-                                color = textColor.hashCode()
+                                color = textColor.toArgb()
                                 textSize = 24f
                             }
                         )
@@ -162,7 +163,7 @@ fun KIndexScreen(viewModel: KIndexViewModel = viewModel()) {
                             x + barWidthPx * 0.1f,
                             size.height - 5f,
                             android.graphics.Paint().apply {
-                                color = textColor.hashCode()
+                                color = textColor.toArgb()
                                 textSize = 20f
                             }
                         )
