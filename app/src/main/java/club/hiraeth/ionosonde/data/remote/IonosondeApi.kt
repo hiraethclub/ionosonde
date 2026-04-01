@@ -3,7 +3,7 @@ package club.hiraeth.ionosonde.data.remote
 import retrofit2.http.GET
 
 interface IonosondeApi {
-    @GET("solar101vhf.php")
+    @GET("solarxml.php")
     suspend fun getSolarXml(): String
 
     companion object {

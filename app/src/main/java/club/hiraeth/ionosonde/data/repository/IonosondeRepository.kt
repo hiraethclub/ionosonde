@@ -56,10 +56,10 @@ class IonosondeRepository(context: Context) {
     }
 
     suspend fun refreshAll() {
-        refreshSolarData()
-        refreshKIndexHistory()
-        refreshSfiForecast()
-        refreshKIndexForecast()
+        try { refreshSolarData() } catch (e: Exception) { android.util.Log.e("IonosondeRepo", "Solar data refresh failed", e) }
+        try { refreshKIndexHistory() } catch (e: Exception) { android.util.Log.e("IonosondeRepo", "K-index refresh failed", e) }
+        try { refreshSfiForecast() } catch (e: Exception) { android.util.Log.e("IonosondeRepo", "SFI refresh failed", e) }
+        try { refreshKIndexForecast() } catch (e: Exception) { android.util.Log.e("IonosondeRepo", "K forecast refresh failed", e) }
     }
 
     companion object {
