@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ionosonde</string>
+
+    <!-- Widget descriptions -->
+    <string name="widget_small_description">K-Index status at a glance</string>
+    <string name="widget_medium_description">Solar indices and HF band conditions</string>
+    <string name="widget_large_description">Full solar data, band conditions, VHF, and terminator map</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_refresh">Refresh data</string>
+    <string name="cd_settings">Settings</string>
+    <string name="cd_about">About</string>
+    <string name="cd_back">Back</string>
+</resources>

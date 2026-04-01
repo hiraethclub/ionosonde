@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- F-layer arc (ionospheric layer) -->
+    <path
+        android:pathData="M24,58 Q54,18 84,58"
+        android:strokeWidth="3"
+        android:strokeColor="#FFFFFF"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Upgoing radio wave (transmitter to ionosphere) -->
+    <path
+        android:pathData="M34,82 L48,52"
+        android:strokeWidth="2.5"
+        android:strokeColor="#FFFFFF"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Downgoing radio wave (ionosphere to receiver) -->
+    <path
+        android:pathData="M48,52 L72,82"
+        android:strokeWidth="2.5"
+        android:strokeColor="#FFFFFF"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Bounce point highlight (amber glow at reflection point) -->
+    <path
+        android:pathData="M48,49 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0"
+        android:fillColor="#FFB347" />
+
+    <!-- Small antenna marks at ground level -->
+    <!-- Transmitter antenna -->
+    <path
+        android:pathData="M34,82 L34,76 M31,76 L37,76"
+        android:strokeWidth="1.5"
+        android:strokeColor="#FFFFFF"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Receiver antenna -->
+    <path
+        android:pathData="M72,82 L72,76 M69,76 L75,76"
+        android:strokeWidth="1.5"
+        android:strokeColor="#FFFFFF"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Secondary thinner F-layer arc (adds depth) -->
+    <path
+        android:pathData="M28,62 Q54,26 80,62"
+        android:strokeWidth="1.5"
+        android:strokeColor="#FFFFFF"
+        android:strokeAlpha="0.4"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Ground line -->
+    <path
+        android:pathData="M24,82 L84,82"
+        android:strokeWidth="1.5"
+        android:strokeColor="#FFFFFF"
+        android:strokeAlpha="0.3"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+</vector>
