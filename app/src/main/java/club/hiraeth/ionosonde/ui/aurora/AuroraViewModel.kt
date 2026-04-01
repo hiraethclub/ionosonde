@@ -30,6 +30,7 @@ class AuroraViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             repository.observeKIndexForecast().collect { _forecast.value = it }
         }
+        refresh()
     }
 
     fun refresh() {

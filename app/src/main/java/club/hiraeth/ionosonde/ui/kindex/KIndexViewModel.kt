@@ -25,6 +25,7 @@ class KIndexViewModel(application: Application) : AndroidViewModel(application) 
                 _entries.value = data
             }
         }
+        refresh()
     }
 
     fun refresh() {
