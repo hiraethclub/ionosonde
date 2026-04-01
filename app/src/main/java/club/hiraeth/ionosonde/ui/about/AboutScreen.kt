@@ -113,6 +113,28 @@ fun AboutScreen(onBack: () -> Unit = {}) {
 
             Spacer(Modifier.height(16.dp))
 
+            SectionCard("Developer") {
+                Text(
+                    "Aisling de Gr\u00E1s",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "aisling@hiraeth.club",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    "Proudly made in Wales\nCymru am byth!",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
+
             SectionCard("Licence") {
                 Text(
                     "This application is provided as-is for amateur radio operators. " +
