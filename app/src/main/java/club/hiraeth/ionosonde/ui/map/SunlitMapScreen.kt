@@ -1,7 +1,13 @@
 package club.hiraeth.ionosonde.ui.map
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Color as AndroidColor
+import android.location.LocationManager
 import android.view.ViewGroup
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,15 +18,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import club.hiraeth.ionosonde.ui.components.LastUpdatedText
 import org.osmdroid.config.Configuration
@@ -37,12 +45,47 @@ data class MufStation(
     val mufValue: String
 )
 
+data class UserLocation(val lat: Double, val lon: Double)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SunlitMapScreen(viewModel: SunlitMapViewModel = viewModel()) {
     val solarData by viewModel.solarData.collectAsState()
     val currentTime by viewModel.currentTimeMillis.collectAsState()
     val context = LocalContext.current
+
+    var userLocation by remember { mutableStateOf<UserLocation?>(null) }
+
+    // Request location permission
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val granted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        if (granted) {
+            userLocation = getLastKnownLocation(context)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        val hasFine = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        val hasCoarse = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (hasFine || hasCoarse) {
+            userLocation = getLastKnownLocation(context)
+        } else {
+            permissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
 
     // Configure OSMDroid
     remember {
@@ -85,7 +128,6 @@ fun SunlitMapScreen(viewModel: SunlitMapViewModel = viewModel()) {
                         controller.setCenter(GeoPoint(20.0, 0.0))
                         minZoomLevel = 2.0
                         maxZoomLevel = 8.0
-                        // Enable tile caching for offline use
                         setUseDataConnection(true)
                     }
                 },
@@ -97,26 +139,18 @@ fun SunlitMapScreen(viewModel: SunlitMapViewModel = viewModel()) {
                     val terminatorPts = SolarCalculator.terminatorPoints(currentTime, 720)
 
                     // Create night-side polygon
-                    // Build polygon covering the night side
                     val nightPolygon = Polygon(mapView).apply {
                         fillPaint.color = AndroidColor.argb(100, 0, 0, 40)
                         outlinePaint.color = AndroidColor.argb(180, 255, 179, 71)
                         outlinePaint.strokeWidth = 2f
                     }
 
-                    // Sort terminator points by longitude for proper polygon construction
                     val sorted = terminatorPts.sortedBy { it.longitude }
-
-                    // Build the night polygon
                     val nightPoints = mutableListOf<GeoPoint>()
-
-                    // Add terminator points
                     sorted.forEach { pt ->
                         nightPoints.add(GeoPoint(pt.latitude, pt.longitude))
                     }
 
-                    // Close the polygon along the appropriate pole
-                    // If subsolar latitude > 0 (northern summer), night is toward south pole
                     val nightPole = if (subsolar.latitude >= 0) -90.0 else 90.0
                     if (sorted.isNotEmpty()) {
                         nightPoints.add(GeoPoint(nightPole, sorted.last().longitude))
@@ -127,7 +161,7 @@ fun SunlitMapScreen(viewModel: SunlitMapViewModel = viewModel()) {
                     nightPolygon.points = nightPoints
                     mapView.overlays.add(nightPolygon)
 
-                    // Add subsolar point marker
+                    // Subsolar point marker
                     val sunMarker = Marker(mapView).apply {
                         position = GeoPoint(subsolar.latitude, subsolar.longitude)
                         setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
@@ -136,7 +170,22 @@ fun SunlitMapScreen(viewModel: SunlitMapViewModel = viewModel()) {
                     }
                     mapView.overlays.add(sunMarker)
 
-                    // Add MUF station markers
+                    // User location marker
+                    userLocation?.let { loc ->
+                        val isNight = SolarCalculator.isNightSide(loc.lat, loc.lon, subsolar)
+                        val userMarker = Marker(mapView).apply {
+                            position = GeoPoint(loc.lat, loc.lon)
+                            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+                            title = "📍 My Location"
+                            snippet = "Lat: %.2f° Lon: %.2f° (%s)".format(
+                                loc.lat, loc.lon,
+                                if (isNight) "Night" else "Day"
+                            )
+                        }
+                        mapView.overlays.add(userMarker)
+                    }
+
+                    // MUF station markers
                     mufStations.forEach { station ->
                         val mufText = if (station.mufValue == "NoRpt") "NoRpt" else "${station.mufValue} MHz"
                         val marker = Marker(mapView).apply {
@@ -176,4 +225,20 @@ fun SunlitMapScreen(viewModel: SunlitMapViewModel = viewModel()) {
             }
         }
     }
+}
+
+@Suppress("MissingPermission")
+private fun getLastKnownLocation(context: Context): UserLocation? {
+    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    val providers = listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER)
+    for (provider in providers) {
+        try {
+            val location = locationManager.getLastKnownLocation(provider)
+            if (location != null) {
+                return UserLocation(location.latitude, location.longitude)
+            }
+        } catch (_: Exception) {
+        }
+    }
+    return null
 }
